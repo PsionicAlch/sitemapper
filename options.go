@@ -43,6 +43,12 @@ type SiteMapperOptions struct {
 	// errorLogger is a function for logging errors that may occur during crawling. Example:
 	//	func(err error) { fmt.Println("ERROR:", err.Error()) }
 	errorLogger func(error)
+
+	// callbackFunc is a function that will be called after crawling has finished. Since it needs
+	// to be set before an instance of SiteMapper has been created we will pass the instance to
+	// the callback function so that users have access to functions like GenerateSitemap if they
+	// need it.
+	callbackFunc func(*SiteMapper)
 }
 
 // DefaultOptions creates an instance of SiteMapperOptions with pre-defined default values.
@@ -57,7 +63,9 @@ type SiteMapperOptions struct {
 //
 // - Link Attributes defaults to an empty list.
 //
-// - Logging functions are nil by default and can be set later.
+// - Logging functions are empty by default and can be set later.
+//
+// - Callback function is empty by default and can be set later.
 func DefaultOptions() *SiteMapperOptions {
 	return &SiteMapperOptions{
 		domain:                   "http://localhost:8080",
@@ -67,6 +75,7 @@ func DefaultOptions() *SiteMapperOptions {
 		linkAttributes:           []string{},
 		infoLogger:               func(msg string) {},
 		errorLogger:              func(err error) {},
+		callbackFunc:             func(mapper *SiteMapper) {},
 	}
 }
 
@@ -174,6 +183,30 @@ func (options *SiteMapperOptions) SetErrorLogger(logger func(error)) {
 	options.errorLogger = func(err error) {
 		if logger != nil {
 			logger(err)
+		}
+	}
+}
+
+// SetCallbackFunction assigns a callback function that will be called after each
+// website crawl.
+//
+//	options.SetCallbackFunction(func(mapper *SiteMapper) {
+//			sitemapURL := "https://example.com/sitemap.xml"
+//			googlePingURL := "https://www.google.com/ping?sitemap=" + url.QueryEscape(sitemapURL)
+//
+//			resp, err := http.Get(googlePingURL)
+//			if err != nil {
+//				fmt.Println("Error sending request:", err)
+//				return
+//			}
+//			defer resp.Body.Close()
+//
+//			fmt.Println("Google Sitemap Ping Response:", resp.Status)
+//	})
+func (options *SiteMapperOptions) SetCallbackFunction(callback func(*SiteMapper)) {
+	options.callbackFunc = func(mapper *SiteMapper) {
+		if callback != nil {
+			callback(mapper)
 		}
 	}
 }

@@ -55,9 +55,11 @@ func NewSiteMapper(options *SiteMapperOptions) *SiteMapper {
 			case <-ticker.C:
 				// Perform a scheduled crawl.
 				mapper.spider.crawl(options.startingURL)
+				options.callbackFunc(mapper)
 			case <-mapper.recrawlSignal:
 				// Perform a manual recrawl triggered by the RecrawlSite method.
 				mapper.spider.crawl(options.startingURL)
+				options.callbackFunc(mapper)
 			}
 		}
 	}()

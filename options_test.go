@@ -178,3 +178,20 @@ func TestSetErrorLogger(t *testing.T) {
 		t.Errorf("Expected errMessage to be '%s', got '%s'", testError, errMessage)
 	}
 }
+
+func TestSetCallbackFunction(t *testing.T) {
+	options := DefaultOptions()
+
+	msg := "Goodbye, Mars!"
+	testMsg := "Hello, World!"
+
+	options.SetCallbackFunction(func(mapper *SiteMapper) {
+		msg = testMsg
+	})
+
+	options.callbackFunc(nil)
+
+	if msg != testMsg {
+		t.Errorf("Expected message to be '%s', got '%s'", testMsg, msg)
+	}
+}

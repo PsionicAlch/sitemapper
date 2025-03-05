@@ -85,6 +85,28 @@ mapperOptions.SetInfoLogger(func (msg string) {
 mapperOptions.SetErrorLogger(func (err error) {
     // Log the error message.
 })
+
+// If you want to run some custom logic after each crawl you can set a callback function.
+// The callback function takes one argument, a pointer to SiteMapper. This allows you to
+// have full access to the SiteMapper functionality.
+mapperOptions.SetCallbackFunction(func (mapper *SiteMapper) {
+    // Define your sitemap URL
+	sitemapURL := "https://example.com/sitemap.xml"
+
+	// Construct the Google ping URL
+	googlePingURL := "https://www.google.com/ping?sitemap=" + url.QueryEscape(sitemapURL)
+
+	// Send the GET request
+	resp, err := http.Get(googlePingURL)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Print response status
+	fmt.Println("Google Sitemap Ping Response:", resp.Status)
+})
 ```
 
 Once you have all of the options set up, you can create a new instance of SiteMapper.
