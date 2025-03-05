@@ -32,6 +32,8 @@ mapperOptions := new(sitemapper.SiteMapperOptions)
 // - Link Attributes defaults to an empty list.
 //
 // - Logging functions are nil by default and can be set later.
+//
+// - Callback function is empty by default and can be set later.
 mapperOptions := sitemapper.DefaultOptions()
 ```
 
