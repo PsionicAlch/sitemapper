@@ -7,7 +7,7 @@ SiteMapper was originally created for, and during the development of, [PsionicAl
 ## Install SiteMapper:
 
 ```bash
-go get -u "github.com/PsionicAlch/sitemapper"
+go get -u "github.com/PsionicAlch/sitemapper@latest"
 ```
 
 ## How to get SiteMapper up and running:
